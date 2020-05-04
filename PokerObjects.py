@@ -37,6 +37,7 @@ class Card:
 
 
 class Card_Collection:
+    """Base class for objects which will hold a list of cards"""
 
     def __init__(self, *cards: Card):
         self.cards = []
