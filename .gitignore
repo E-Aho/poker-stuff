@@ -1,7 +1,6 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -141,3 +140,7 @@ idea/
 /modules.xml
 /inspectionProfiles/profiles_settings.xml
 /PokerStuff.iml
+
+# PyTest files
+.pytest_cache/
+*.pytest_cache/S
