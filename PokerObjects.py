@@ -35,6 +35,10 @@ class Card:
     def __str__(self):
         return "{val} of {suit}".format(val=value_strings[self.value], suit=self.suit.name.capitalize())
 
+    def __eq__(self, other_obj):
+        if isinstance(other_obj, Card):
+            return (self.suit, self.value) == (other_obj.suit, other_obj.value)
+        else: return False
 
 class Card_Collection:
     """Base class for objects which will hold a list of cards"""
@@ -58,11 +62,6 @@ class Hand(Card_Collection):
         super().__init__(*cards)
 
 
-class Board(Card_Collection):
-    def __init__(self, cards=()):
-        super().__init__(*cards)
-
-
 class Deck(Card_Collection):
     def __init__(self):
         super().__init__()
@@ -75,6 +74,14 @@ class Deck(Card_Collection):
         self.shuffle()
         for target in targets:
             target.add(*[self.cards.pop() for _ in range(count)])
+
+
+class Board(Card_Collection):
+    def __init__(self, cards=()):
+        super().__init__(*cards)
+
+    def deal_flop(self, deck: Deck):
+        deck.deal(self, count=3)
 
 
 if __name__ == "__main__":
