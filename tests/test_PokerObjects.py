@@ -1,5 +1,6 @@
 from PokerObjects import *
 
+# Run with PyTest
 
 class Test_Card:
 
@@ -22,6 +23,7 @@ class Test_Card:
         assert card_b != card_d
 
 
+
 class Test_Deck:
 
     def test_Base_deck_has_52_cards(self):
@@ -42,3 +44,4 @@ class Test_Board:
 
         for card in board.cards:
             assert card not in deck.cards
+

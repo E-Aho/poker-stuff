@@ -4,6 +4,7 @@ from random import shuffle
 allowed_values = [x for x in range(2, 15)]
 
 value_strings = {
+    1: "Ace",
     2: "2",
     3: "3",
     4: "4",
@@ -17,6 +18,18 @@ value_strings = {
     12: "Queen",
     13: "King",
     14: "Ace"
+}
+
+strength_strings = {
+    0: "High card",
+    1: "Pair",
+    2: "Two pair",
+    3: "3 of a kind",
+    4: "Straight",
+    5: "Flush",
+    6: "Full house",
+    7: "4 of a kind",
+    8: "Straight flush"
 }
 
 
@@ -38,7 +51,9 @@ class Card:
     def __eq__(self, other_obj):
         if isinstance(other_obj, Card):
             return (self.suit, self.value) == (other_obj.suit, other_obj.value)
-        else: return False
+        else:
+            return False
+
 
 class Card_Collection:
     """Base class for objects which will hold a list of cards"""
@@ -56,10 +71,62 @@ class Card_Collection:
         if cards is not None:
             self.cards += cards
 
+    def sort_by_val(self):
+        """Sorts the cards in this object in value from largest to smallest"""
+        self.cards = sorted(self.cards, key=lambda card: card.value)
+
+    def get_sorted_cards(self):
+        """Returns a sorted array of cards, but does not affect the original object"""
+        return sorted(self.cards, key=lambda card: card.value)
+
+    def has_bigger_cards_than(self, other_obj):
+        """
+        Compares cards, from largest to smallest in each card collection,
+        to see which object has the larger largest cards.
+        e.g K,5,4,3,2 would be bigger than 10,9,7,6,5, as K > 10
+        Raises error if the objects are of different size or type
+        """
+        
+        if not isinstance(other_obj, Card_Collection):
+            raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj)}")
+        
+        if num_cards := len(my_cards := self.get_sorted_cards()) != len(other_cards := other_obj.get_sorted_cards()):
+            raise ValueError(f"Input card collections are not the same length.")
+        
+        for i in range(num_cards):
+            if my_cards[i].value > other_cards[i].value:
+                return True
+            elif my_cards[i].value != other_cards[i].value:
+                return False
+
+        return False  # All cards are equal, so not bigger
+
+    def has_same_values_as(self, other_obj):
+
+        if not isinstance(other_obj, Card_Collection):
+            raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj)}")
+
+        if num_cards := len(my_cards := self.get_sorted_cards()) != len(other_cards := other_obj.get_sorted_cards()):
+            raise ValueError(f"Input card collections are not the same length.")
+
+        for i in range(num_cards):
+            if my_cards[i].value != other_cards[i].value:
+                return False
+
+        return True
+
 
 class Hand(Card_Collection):
+    """
+    Object that serves as proxy for player.
+    Contains both that players card and the strength of their cards with the board
+    """
+
     def __init__(self, cards=()):
         super().__init__(*cards)
+
+        self.strength = 0
+        self.best_5 = []
 
 
 class Deck(Card_Collection):
