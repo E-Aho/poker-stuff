@@ -65,3 +65,40 @@ class Test_get_straight:
 
         assert returned == straight1 or straight2
 
+    def test_tooFewCards_returnsNone(self):
+        sq = Card(12, Suit.SPADES)
+        hj = Card(11, Suit.HEARTS)
+        h10 = Card(10, Suit.HEARTS)
+        c9 = Card(9, Suit.CLUBS)
+
+        cards = [sq, h10, hj, c9]
+        returned = get_straight(cards)
+
+        assert returned is None
+
+    def test_multipleStraights_returnsHighest(self):
+        queen = Card(12, Suit.CLUBS)
+        jack = Card(11, Suit.HEARTS)
+        ten = Card(10, Suit.SPADES)
+        nine = Card(9, Suit.DIAMONDS)
+        eight = Card(8, Suit.CLUBS)
+        seven = Card(7, Suit.HEARTS)
+
+        cards = [jack, ten, nine, queen, seven, eight]
+        returned = get_straight(cards)
+
+        assert returned == [queen, jack, ten, nine, eight]
+
+    def test_noStraight_returnsNone(self):
+        queen = Card(12, Suit.CLUBS)
+        jack = Card(11, Suit.HEARTS)
+        four = Card(4, Suit.SPADES)
+        nine = Card(9, Suit.DIAMONDS)
+        eight = Card(8, Suit.CLUBS)
+        seven = Card(7, Suit.HEARTS)
+
+        cards = [jack, four, nine, queen, seven, eight]
+        returned = get_straight(cards)
+
+        assert returned is None
+

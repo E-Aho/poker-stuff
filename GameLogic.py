@@ -2,6 +2,12 @@ from collections import Counter
 
 from PokerObjects import *
 
+"""
+NB: Methods assume that normal Texas Hold'em rules are used.
+
+Some methods may not return optimal hand in case of weird rules.
+E.g if there are 10+ cards in hand + board, where more than one straight or flush is possible.
+"""
 
 def get_straight(input_cards: list):
     """
@@ -9,6 +15,7 @@ def get_straight(input_cards: list):
     This function will ignore suit.
     (E.g if two cards of same suit can be in a straight, will return either)
     """
+
     cards = sorted(input_cards, key=lambda c: -c.value)
 
     # remove duplicate value cards
@@ -39,17 +46,41 @@ def get_straight(input_cards: list):
     return None
 
 
-def find_strongest(cards: list):
+def find_flush(input_cards: list):
+
+    if len(input_cards) < 5:  # too few cards for flush
+        return None
+
+    suit_counter = Counter([c.suit for c in input_cards])
+    for suit, suit_count in suit_counter.items():
+        if suit_count >= 5:
+            sorted_flush = sorted([c for c in input_cards if c.suit == suit], key=lambda c: -c.value)
+            return sorted_flush
+
+    return None
+
+
+def find_strongest(hand: Hand, board: Board):
     """Takes in a single hand, returns a scored hand"""
 
-    # check if flush is present
+    cards = hand.cards + board.cards
 
-    count_suits = Counter([c.suit for c in cards])
+    if flush := find_flush(cards) is not None:
+        if straight_flush := get_straight(flush) is not None:
+            hand.best_5 = straight_flush
+            hand.strength = 8
+            return hand
+        else:
+            hand.best_5 = flush[0:5]
+            hand.strength = 5
+            return hand
+    elif straight := get_straight(cards) is not None:
+        hand.best_5 = straight
+        hand.strength = 4
 
-    for suit, count in count_suits.items():
-        if count >= 5:
-            flush_vals = sorted([card.value for card in cards if card.suit == suit])
-            return flush_vals[0:5]
+
+
+
 
 
 if __name__ == "__main__":
@@ -61,4 +92,3 @@ if __name__ == "__main__":
     d.deal(h, count=3)
     d.deal(b, count=2)
 
-    get_straight(b, h)
