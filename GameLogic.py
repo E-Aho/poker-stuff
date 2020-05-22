@@ -97,13 +97,13 @@ def find_strongest(hand: Hand, board: Board):
         # must be 4 of a kind + high card
         four_of_a_kind = sets[:4]
         remainder = get_sorted_remainder(four_of_a_kind, cards)
-        hand.best_5 = four_of_a_kind + remainder[0]
+        hand.best_5 = four_of_a_kind.append(remainder[0])
         hand.strength = 7
         return hand
 
     def handle_3_set():
         # either 3 of a kind or full house
-        if len_set := len(sets) == 3:  # 3 of a kind
+        if (len_set := len(sets)) == 3:  # 3 of a kind
             three_of_a_kind = sets
             remainder = get_sorted_remainder(three_of_a_kind, cards)
             hand.best_5 = three_of_a_kind + remainder[:2]
@@ -130,19 +130,23 @@ def find_strongest(hand: Hand, board: Board):
         else:
             two_pair = sorted(sets, key=lambda c: -c.value)[:4]
             remainder = get_sorted_remainder(two_pair, cards)
-            hand.best_5 = two_pair + remainder[0]
+            hand.best_5 = two_pair.append(remainder[0])
             hand.strength = 2
             return hand
 
-    handle_set_switcher = {
-        4: handle_4_set(),
-        3: handle_3_set(),
-        2: handle_2_set()
-    }
+    def set_switcher(set_size: int):
+        size_switch_case = {
+            4: lambda: handle_4_set(),
+            3: lambda: handle_3_set(),
+            2: lambda: handle_2_set()
+        }
+        function = size_switch_case.get(set_size, lambda: 'invalid')
+        return function()
 
-    largest_count = value_counter.most_common(1)[0][1]
+    largest_count = max(count for _, count in value_counter.items())
 
-    return handle_set_switcher[largest_count]
+    return set_switcher(largest_count)
+
 
 if __name__ == "__main__":
     d = Deck()

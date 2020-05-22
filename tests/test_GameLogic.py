@@ -102,3 +102,23 @@ class Test_get_straight:
 
         assert returned is None
 
+class Test_find_strongest:
+
+    def test_FullHouse_twoTriplets_returnsCorrectly(self):
+        king1 = Card(13, Suit.CLUBS)
+        king2 = Card(13, Suit.HEARTS)
+        king3 = Card(13, Suit.DIAMONDS)
+        jack1 = Card(11, Suit.CLUBS)
+        jack2 = Card(11, Suit.SPADES)
+        jack3 = Card(11, Suit.DIAMONDS)
+        other_card = Card(5, Suit.DIAMONDS)
+
+        hand = Hand((king1, jack1))
+        board = Board((king2, king3, jack2, jack3, other_card))
+
+        scored_hand = find_strongest(hand, board)
+
+        assert scored_hand.strength == 6
+        assert len(scored_hand.best_5) == 5
+        assert len(scored_hand.cards) == 2
+        assert Counter([c.value for c in scored_hand.best_5]) == Counter([13, 13, 13, 11, 11])
