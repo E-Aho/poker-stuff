@@ -14,6 +14,18 @@ def get_sorted_remainder(sets: list, all_cards: list):
     return sorted([c for c in all_cards if c not in sets], key=lambda c: -c.value)
 
 
+def get_sorted_sets(cards: list):
+    """Takes in cards, returns list of cards sorted first by size of set, then by value for sets of same size
+    e.g for cards with values as follows,
+    [14, 14, 13, 13, 13, 12, 11] => [13, 13 ,13 ,14, 14]
+    [6, 2, 6, 2, 4, 4, 4] => [4, 4, 4, 6, 6, 2, 2]
+    [2, 3, 4, 5, 6, 7] => []
+    """
+    value_counter = Counter([c.value for c in cards])
+    sets = [c for c in cards if value_counter[c.value] > 1]
+    return sorted(sets, key=lambda c: -(value_counter[c.value] + c.value/100))
+
+
 def get_straight(input_cards: list):
     """
     Takes a list of cards, returns list of cards in straight (if a straight exists) or none
@@ -69,8 +81,8 @@ def find_strongest(hand: Hand, board: Board):
 
     cards = hand.cards + board.cards
 
-    if flush := find_flush(cards) is not None:
-        if straight_flush := get_straight(flush) is not None:
+    if (flush := find_flush(cards)) is not None:
+        if (straight_flush := get_straight(flush)) is not None:
             hand.best_5 = straight_flush
             hand.strength = 8
             return hand
@@ -78,15 +90,14 @@ def find_strongest(hand: Hand, board: Board):
             hand.best_5 = flush[0:5]
             hand.strength = 5
             return hand
-    elif straight := get_straight(cards) is not None:
+    elif (straight := get_straight(cards)) is not None:
         hand.best_5 = straight
         hand.strength = 4
         return hand
 
     # no straights or flushes, now check for sets
 
-    value_counter = Counter([c.value for c in cards])
-    sets = sorted([c for c in cards if value_counter[c.value] > 1], key=lambda c: value_counter[c.value])
+    sets = get_sorted_sets(cards)
 
     if not sets:
         hand.best_5 = sorted(cards, key=lambda c: -c.value)[:5]
@@ -97,7 +108,7 @@ def find_strongest(hand: Hand, board: Board):
         # must be 4 of a kind + high card
         four_of_a_kind = sets[:4]
         remainder = get_sorted_remainder(four_of_a_kind, cards)
-        hand.best_5 = four_of_a_kind.append(remainder[0])
+        hand.best_5 = four_of_a_kind + [remainder[0]]
         hand.strength = 7
         return hand
 
@@ -111,12 +122,7 @@ def find_strongest(hand: Hand, board: Board):
             return hand
         else:  # full house
             hand.strength = 6
-            if len_set == 5:
-                hand.best_5 = sets
-            elif len_set == 6:
-                hand.best_5 = sorted(sets, key=lambda c: -c.value)[:5]
-            else:  # len_set == 7
-                hand.best_5 = sets[:3] + sorted(sets[4:], key=lambda c: -c.value)[:2]
+            hand.best_5 = sets[:5]  # Set has been sorted already to have best option in first 5 in get_sorted_sets
             return hand
 
     def handle_2_set():
@@ -130,7 +136,7 @@ def find_strongest(hand: Hand, board: Board):
         else:
             two_pair = sorted(sets, key=lambda c: -c.value)[:4]
             remainder = get_sorted_remainder(two_pair, cards)
-            hand.best_5 = two_pair.append(remainder[0])
+            hand.best_5 = two_pair + [remainder[0]]
             hand.strength = 2
             return hand
 
@@ -143,7 +149,7 @@ def find_strongest(hand: Hand, board: Board):
         function = size_switch_case.get(set_size, lambda: 'invalid')
         return function()
 
-    largest_count = max(count for _, count in value_counter.items())
+    largest_count = max(count for _, count in Counter([c.value for c in cards]).items())
 
     return set_switcher(largest_count)
 
