@@ -23,7 +23,7 @@ def get_sorted_sets(cards: list):
     """
     value_counter = Counter([c.value for c in cards])
     sets = [c for c in cards if value_counter[c.value] > 1]
-    return sorted(sets, key=lambda c: -(value_counter[c.value] + c.value/100))
+    return sorted(sets, key=lambda c: -(value_counter[c.value] + c.value / 100))
 
 
 def get_straight(input_cards: list):
@@ -122,7 +122,7 @@ def find_strongest(hand: Hand, board: Board):
             return hand
         else:  # full house
             hand.strength = 6
-            hand.best_5 = sets[:5]  # Set has been sorted already to have best option in first 5 in get_sorted_sets
+            hand.best_5 = sets[:5] # Set has been sorted already to have best option in first 5 in get_sorted_sets
             return hand
 
     def handle_2_set():
@@ -154,7 +154,33 @@ def find_strongest(hand: Hand, board: Board):
     return set_switcher(largest_count)
 
 
+def get_scoring_order(*hands: Hand):
+    """takes in any number of hands, returns list of lists of hands in order of strength"""
+    scoring_order = []
+    for strength in range(8, -1, -1):
+        if st := [hand for hand in hands if hand.strength == strength]:
+            if len(st) == 1:
+                scoring_order.append(st)
+            else:  # group into lists based on best_5 of each hand
+
+                curr_str_list = []
+                while len(st) > 0:
+                    hand = st.pop()
+                    sub_list = [hand]
+                    for other_hand in st:  # check if they have the same value cards
+                        if Card_Collection(*hand.best_5).has_same_values_as(Card_Collection(*other_hand.best_5)):
+                            # hands are same, add to same sublist
+                            sub_list.append(other_hand)
+                            st.remove(other_hand)
+                    curr_str_list.append(sub_list)
+                curr_str_list.sort(key=lambda arr: Card_Collection(*arr[0].best_5), reverse=True)
+                scoring_order += curr_str_list
+
+    return scoring_order
+
+
 if __name__ == "__main__":
+
     d = Deck()
 
     b = Board()

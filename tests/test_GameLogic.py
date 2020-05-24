@@ -1,5 +1,9 @@
 from GameLogic import *
 
+from tests.utilsForTest import *
+
+
+# Run with PyTest
 
 class Test_get_straight:
 
@@ -463,3 +467,45 @@ class Test_find_strongest:
         assert scored_hand.cards == [six, jack]
         assert len(scored_hand.best_5) == 5
         assert [c.value for c in scored_hand.best_5] == [13, 11, 10, 8, 6]
+
+
+class Test_get_scoring_order:
+
+    def test_baseCase_returnsCorrectly(self):
+        top_hand = Hand((king_c, ten_c))
+        second_hand = Hand((nine_d, nine_h))
+        bottom_hand = Hand((nine_s, three_h))
+
+        board = Board((nine_c, four_c, ace_c, two_d, seven_h))
+
+        top_hand.strength = 5  # flush
+        second_hand.strength = 3  # three of a kind
+        bottom_hand.strength = 1  # pair
+
+        top_hand.best_5 = [ace_c, king_c, ten_c, nine_c, four_c]
+        second_hand.best_5 = [nine_c, nine_d, nine_h, ace_c, seven_h]
+        bottom_hand.best_5 = [nine_c, nine_s, ace_c, seven_h, four_c]
+
+        sorted_hands = get_scoring_order(bottom_hand, top_hand, second_hand)
+
+        assert sorted_hands == [[top_hand], [second_hand], [bottom_hand]]
+
+    def test_withTie_returnsCorrectly(self):
+        top_hand = Hand()
+        second_hand = Hand()
+        tied_second_hand = Hand()
+        bottom_hand = Hand()
+
+        top_hand.strength = 3  # 3 of a kind
+        second_hand.strength = 2  # two pair
+        tied_second_hand.strength = 2  # two pair, same as above
+        bottom_hand.strength = 2  # two pair, worse kicker
+
+        top_hand.best_5 = [seven_h, seven_c, seven_d, ace_c, king_h]
+        second_hand.best_5 = [ace_c, ace_d, seven_h, seven_c, nine_d]
+        tied_second_hand.best_5 = [ace_c, ace_h, seven_h, seven_c, nine_h]
+        bottom_hand.best_5 = [ace_c, ace_s, seven_h, seven_c, four_c]
+
+        sorted_hands = get_scoring_order(bottom_hand, top_hand, tied_second_hand, second_hand)
+
+        assert sorted_hands == [[top_hand], [second_hand, tied_second_hand], [bottom_hand]]
