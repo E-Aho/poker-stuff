@@ -73,11 +73,11 @@ class Card_Collection:
 
     def sort_by_val(self):
         """Sorts the cards in this object in value from largest to smallest"""
-        self.cards = sorted(self.cards, key=lambda card: card.value)
+        self.cards = sorted(self.cards, key=lambda card: -card.value)
 
     def get_sorted_cards(self):
         """Returns a sorted array of cards, but does not affect the original object"""
-        return sorted(self.cards, key=lambda card: card.value)
+        return sorted(self.cards, key=lambda card: -card.value)
 
     def __gt__(self, other_obj):
         """
@@ -85,21 +85,22 @@ class Card_Collection:
         to see which object has the larger largest cards.
         e.g K,5,4,3,2 would be bigger than 10,9,7,6,5, as K > 10
         Raises error if the objects are of different size or type
+        NB: Does not sort cards, assumes card order is relevant. (e.g 10, 10. 2 > 9, 9. ace)
         """
         
         if not isinstance(other_obj, Card_Collection):
             raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj)}")
         
-        if num_cards := len(my_cards := self.get_sorted_cards()) != len(other_cards := other_obj.get_sorted_cards()):
+        if (num_cards := len(my_cards := self.cards)) != len(other_cards := other_obj.cards):
             raise ValueError(f"Input card collections are not the same length.")
         
         for i in range(num_cards):
             if my_cards[i].value > other_cards[i].value:
-                return True
+                return 1
             elif my_cards[i].value != other_cards[i].value:
-                return False
+                return 0
 
-        return False  # All cards are equal, so not bigger
+        return 0  # All cards are equal, so not bigger
 
     def __lt__(self, other_obj):
         """
@@ -107,21 +108,22 @@ class Card_Collection:
         to see which object has the smaller largest cards.
         e.g K,5,4,3,2 would be bigger than 10,9,7,6,5, as K > 10
         Raises error if the objects are of different size or type
+        NB: Does not sort cards, assumes card order is relevant. (e.g 10, 10. 2 > 9, 9. ace)
         """
 
         if not isinstance(other_obj, Card_Collection):
             raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj)}")
 
-        if num_cards := len(my_cards := self.get_sorted_cards()) != len(other_cards := other_obj.get_sorted_cards()):
+        if (num_cards := len(my_cards := self.cards)) != len(other_cards := other_obj.cards):
             raise ValueError(f"Input card collections are not the same length.")
 
         for i in range(num_cards):
             if my_cards[i].value < other_cards[i].value:
-                return True
+                return 1
             elif my_cards[i].value != other_cards[i].value:
-                return False
+                return 0
 
-        return False  # All cards are equal, so not bigger
+        return 0  # All cards are equal, so not smaller
 
     def has_same_values_as(self, other_obj):
 

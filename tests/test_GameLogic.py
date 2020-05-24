@@ -476,7 +476,7 @@ class Test_get_scoring_order:
         second_hand = Hand((nine_d, nine_h))
         bottom_hand = Hand((nine_s, three_h))
 
-        board = Board((nine_c, four_c, ace_c, two_d, seven_h))
+        # board = Board((nine_c, four_c, ace_c, two_d, seven_h))
 
         top_hand.strength = 5  # flush
         second_hand.strength = 3  # three of a kind

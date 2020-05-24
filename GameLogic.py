@@ -15,7 +15,8 @@ def get_sorted_remainder(sets: list, all_cards: list):
 
 
 def get_sorted_sets(cards: list):
-    """Takes in cards, returns list of cards sorted first by size of set, then by value for sets of same size
+    """
+    Takes in cards, returns list of cards sorted first by size of set, then by value for sets of same size
     e.g for cards with values as follows,
     [14, 14, 13, 13, 13, 12, 11] => [13, 13 ,13 ,14, 14]
     [6, 2, 6, 2, 4, 4, 4] => [4, 4, 4, 6, 6, 2, 2]
@@ -163,7 +164,7 @@ def get_scoring_order(*hands: Hand):
                 scoring_order.append(st)
             else:  # group into lists based on best_5 of each hand
 
-                curr_str_list = []
+                list_current_strength = []
                 while len(st) > 0:
                     hand = st.pop()
                     sub_list = [hand]
@@ -172,9 +173,9 @@ def get_scoring_order(*hands: Hand):
                             # hands are same, add to same sublist
                             sub_list.append(other_hand)
                             st.remove(other_hand)
-                    curr_str_list.append(sub_list)
-                curr_str_list.sort(key=lambda arr: Card_Collection(*arr[0].best_5), reverse=True)
-                scoring_order += curr_str_list
+                    list_current_strength.append(sub_list)
+                list_current_strength.sort(key=lambda arr: Card_Collection(*arr[0].best_5), reverse=True)
+                scoring_order += list_current_strength
 
     return scoring_order
 
