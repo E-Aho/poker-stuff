@@ -115,7 +115,7 @@ def find_strongest(hand: Hand, board: Board):
 
     def handle_3_set():
         # either 3 of a kind or full house
-        if (len_set := len(sets)) == 3:  # 3 of a kind
+        if len(sets) == 3:  # 3 of a kind
             three_of_a_kind = sets
             remainder = get_sorted_remainder(three_of_a_kind, cards)
             hand.best_5 = three_of_a_kind + remainder[:2]
@@ -123,7 +123,7 @@ def find_strongest(hand: Hand, board: Board):
             return hand
         else:  # full house
             hand.strength = 6
-            hand.best_5 = sets[:5] # Set has been sorted already to have best option in first 5 in get_sorted_sets
+            hand.best_5 = sets[:5]  # Set has been sorted already to have best option in first 5 in get_sorted_sets
             return hand
 
     def handle_2_set():
@@ -174,6 +174,9 @@ def get_scoring_order(*hands: Hand):
                             sub_list.append(other_hand)
                             st.remove(other_hand)
                     list_current_strength.append(sub_list)
+
+                # sort current strength list in order of the card size in the sublists
+                # (using overridden __gt__ and __lt__ for Card_Collection)
                 list_current_strength.sort(key=lambda arr: Card_Collection(*arr[0].best_5), reverse=True)
                 scoring_order += list_current_strength
 

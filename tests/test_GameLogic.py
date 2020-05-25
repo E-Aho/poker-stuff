@@ -2,109 +2,48 @@ from GameLogic import *
 
 from tests.utilsForTest import *
 
-
 # Run with PyTest
+
 
 class Test_getStraight:
 
     def test_normalCase_returnsStraight(self):
-        s2 = Card(2, Suit.SPADES)
-        h3 = Card(3, Suit.HEARTS)
-        d4 = Card(4, Suit.DIAMONDS)
-        d5 = Card(5, Suit.DIAMONDS)
-        s6 = Card(6, Suit.SPADES)
-        ck = Card(13, Suit.CLUBS)
+        cards = [two_s, three_h, six_d, five_d, four_c, king_c]
 
-        cards = [s2, h3, s6, d5, d4, ck]
-
-        returned_val = get_straight(cards)
-
-        assert returned_val == [s6, d5, d4, h3, s2]
+        assert get_straight(cards) == [six_d, five_d, four_c, three_h, two_s]
 
     def test_withAceLow_returnsStraight(self):
-        s2 = Card(2, Suit.SPADES)
-        h3 = Card(3, Suit.HEARTS)
-        d4 = Card(4, Suit.DIAMONDS)
-        d5 = Card(5, Suit.DIAMONDS)
-        sa = Card(14, Suit.SPADES)
-        ck = Card(13, Suit.CLUBS)
+        cards = [two_s, three_h, four_h, five_d, ace_c, king_c]
 
-        cards = [s2, h3, d4, d5, sa, ck]
-
-        returned_val = get_straight(cards)
-
-        assert returned_val == [d5, d4, h3, s2, sa]
+        assert get_straight(cards) == [five_d, four_h, three_h, two_s, ace_c]
 
     def test_withAceHigh_returnsStraight(self):
-        sa = Card(14, Suit.SPADES)
-        dk = Card(13, Suit.DIAMONDS)
-        sq = Card(12, Suit.SPADES)
-        hj = Card(11, Suit.HEARTS)
-        h10 = Card(10, Suit.HEARTS)
-        c4 = Card(4, Suit.CLUBS)
-        c8 = Card(8, Suit.CLUBS)
+        cards = [eight_c, ace_s, queen_s, jack_h, king_d, four_d, ten_h]
 
-        cards = [c8, sa, sq, hj, dk, c4, h10]
-
-        returned = get_straight(cards)
-
-        assert returned == [sa, dk, sq, hj, h10]
+        assert get_straight(cards) == [ace_s, king_d, queen_s, jack_h, ten_h]
 
     def test_withDuplicates_returnsStraight(self):
-        dk = Card(13, Suit.DIAMONDS)
-        hk = Card(13, Suit.HEARTS)
-        sq = Card(12, Suit.SPADES)
-        hj = Card(11, Suit.HEARTS)
-        h10 = Card(10, Suit.HEARTS)
-        c9 = Card(9, Suit.CLUBS)
-        c4 = Card(4, Suit.CLUBS)
-        c8 = Card(8, Suit.CLUBS)
+        cards = [eight_s, king_h, queen_d, jack_c, king_d, four_d, ten_d, nine_c]
 
-        cards = [c8, hk, sq, hj, dk, c4, h10, c9]
+        straight1 = [king_h, queen_d, jack_c, ten_d, nine_c]
+        straight2 = [king_d, queen_d, jack_c, ten_d, nine_c]
 
-        returned = get_straight(cards)
-
-        straight1 = [hk, sq, hj, h10, c9]
-        straight2 = [dk, sq, hj, h10, c9]
-
-        assert returned == straight1 or straight2
+        assert get_straight(cards) == straight1 or straight2
 
     def test_tooFewCards_returnsNone(self):
-        sq = Card(12, Suit.SPADES)
-        hj = Card(11, Suit.HEARTS)
-        h10 = Card(10, Suit.HEARTS)
-        c9 = Card(9, Suit.CLUBS)
+        cards = [queen_c, ten_d, jack_d, nine_c]
 
-        cards = [sq, h10, hj, c9]
-        returned = get_straight(cards)
-
-        assert returned is None
+        assert get_straight(cards) is None
 
     def test_multipleStraights_returnsHighest(self):
-        queen = Card(12, Suit.CLUBS)
-        jack = Card(11, Suit.HEARTS)
-        ten = Card(10, Suit.SPADES)
-        nine = Card(9, Suit.DIAMONDS)
-        eight = Card(8, Suit.CLUBS)
-        seven = Card(7, Suit.HEARTS)
+        cards = [jack_d, ten_c, nine_s, queen_h, seven_s, eight_d]
 
-        cards = [jack, ten, nine, queen, seven, eight]
-        returned = get_straight(cards)
-
-        assert returned == [queen, jack, ten, nine, eight]
+        assert get_straight(cards) == [queen_h, jack_d, ten_c, nine_s, eight_d]
 
     def test_noStraight_returnsNone(self):
-        queen = Card(12, Suit.CLUBS)
-        jack = Card(11, Suit.HEARTS)
-        four = Card(4, Suit.SPADES)
-        nine = Card(9, Suit.DIAMONDS)
-        eight = Card(8, Suit.CLUBS)
-        seven = Card(7, Suit.HEARTS)
+        cards = [jack_s, four_d, nine_c, queen_d, seven_c, eight_d]
 
-        cards = [jack, four, nine, queen, seven, eight]
-        returned = get_straight(cards)
-
-        assert returned is None
+        assert get_straight(cards) is None
 
 
 class Test_findStrongest:
@@ -112,271 +51,159 @@ class Test_findStrongest:
     class Test_StraightFlush:
 
         def test_baseCase_returnsCorrectly(self):
-            three = Card(3, Suit.CLUBS)
-            four = Card(4, Suit.CLUBS)
-            five = Card(5, Suit.CLUBS)
-            six = Card(6, Suit.CLUBS)
-            seven = Card(7, Suit.CLUBS)
-            nine = Card(9, Suit.DIAMONDS)
-            jack = Card(11, Suit.SPADES)
-
-            hand = Hand((six, five))
-            board = Board((three, seven, jack, four, nine))
+            hand = Hand((six_c, five_c))
+            board = Board((three_c, seven_c, jack_h, four_c, nine_d))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 8
-            assert scored_hand.cards == [six, five]
+            assert scored_hand.cards == [six_c, five_c]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [7, 6, 5, 4, 3]
 
         def test_multiplePossible_returnsCorrectly(self):
-            three = Card(3, Suit.CLUBS)
-            four = Card(4, Suit.CLUBS)
-            five = Card(5, Suit.CLUBS)
-            six = Card(6, Suit.CLUBS)
-            seven = Card(7, Suit.CLUBS)
-            eight = Card(8, Suit.CLUBS)
-            jack = Card(11, Suit.SPADES)
-
-            hand = Hand((six, five))
-            board = Board((three, seven, jack, four, eight))
+            hand = Hand((six_c, five_c))
+            board = Board((three_c, seven_c, jack_d, four_c, eight_c))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 8
-            assert scored_hand.cards == [six, five]
+            assert scored_hand.cards == [six_c, five_c]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [8, 7, 6, 5, 4]
 
     class Test_FourOfAKind:
         def test_withPair_returnsCorrectly(self):
-            seven1 = Card(7, Suit.CLUBS)
-            seven2 = Card(7, Suit.HEARTS)
-            seven3 = Card(7, Suit.DIAMONDS)
-            seven4 = Card(7, Suit.SPADES)
-            ten1 = Card(10, Suit.SPADES)
-            ten2 = Card(10, Suit.DIAMONDS)
-            ace = Card(14, Suit.DIAMONDS)
-
-            hand = Hand((seven1, seven2))
-            board = Board((ten1, ten2, seven3, seven4, ace))
+            hand = Hand((seven_c, seven_h))
+            board = Board((ten_s, ten_d, seven_d, seven_s, ace_d))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 7
-            assert scored_hand.cards == [seven1, seven2]
+            assert scored_hand.cards == [seven_c, seven_h]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [7, 7, 7, 7, 14]
 
         def test_baseCase_returnsCorrectly(self):
-            nine1 = Card(9, Suit.CLUBS)
-            nine2 = Card(9, Suit.HEARTS)
-            nine3 = Card(9, Suit.DIAMONDS)
-            nine4 = Card(9, Suit.SPADES)
-            ten = Card(10, Suit.SPADES)
-            four = Card(4, Suit.DIAMONDS)
-            king = Card(13, Suit.DIAMONDS)
-
-            hand = Hand((nine1, ten))
-            board = Board((nine2, four, king, nine3, nine4))
+            hand = Hand((nine_c, ten_d))
+            board = Board((nine_h, four_c, king_h, nine_d, nine_s))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 7
-            assert scored_hand.cards == [nine1, ten]
+            assert scored_hand.cards == [nine_c, ten_d]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [9, 9, 9, 9, 13]
 
     class Test_FullHouse:
 
         def test_twoTriplets_returnsCorrectly(self):
-            king1 = Card(13, Suit.CLUBS)
-            king2 = Card(13, Suit.HEARTS)
-            king3 = Card(13, Suit.DIAMONDS)
-            jack1 = Card(11, Suit.CLUBS)
-            jack2 = Card(11, Suit.SPADES)
-            jack3 = Card(11, Suit.DIAMONDS)
-            other_card = Card(5, Suit.DIAMONDS)
-
-            hand = Hand((king1, jack1))
-            board = Board((king2, king3, jack2, jack3, other_card))
+            hand = Hand((king_c, jack_c))
+            board = Board((king_h, king_d, jack_s, jack_d, five_d))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 6
-            assert scored_hand.cards == [king1, jack1]
+            assert scored_hand.cards == [king_c, jack_c]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [13, 13, 13, 11, 11]
 
         def test_TripletAnd2Pairs_returnsCorrectly(self):
-            king1 = Card(13, Suit.CLUBS)
-            king2 = Card(13, Suit.HEARTS)
-            king3 = Card(13, Suit.DIAMONDS)
-            ace1 = Card(14, Suit.CLUBS)
-            ace2 = Card(14, Suit.SPADES)
-            seven1 = Card(7, Suit.DIAMONDS)
-            seven2 = Card(7, Suit.CLUBS)
-
-            hand = Hand((king1, ace1))
-            board = Board((seven1, seven2, ace2, king2, king3))
+            hand = Hand((king_c, ace_c))
+            board = Board((seven_d, seven_c, ace_s, king_h, king_d))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 6
-            assert scored_hand.cards == [king1, ace1]
+            assert scored_hand.cards == [king_c, ace_c]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [13, 13, 13, 14, 14]
 
         def test_TripletAndPair_returnsCorrectly(self):
-            six1 = Card(6, Suit.CLUBS)
-            six2 = Card(6, Suit.HEARTS)
-            six3 = Card(6, Suit.DIAMONDS)
-            ten1 = Card(10, Suit.CLUBS)
-            ten2 = Card(10, Suit.SPADES)
-            other1 = Card(3, Suit.CLUBS)
-            other2 = Card(9, Suit.SPADES)
-
-            hand = Hand((six1, six2))
-            board = Board((ten1, other1, other2, six3, ten2))
+            hand = Hand((six_c, six_h))
+            board = Board((ten_c, three_d, king_d, six_d, ten_s))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 6
-            assert scored_hand.cards == [six1, six2]
+            assert scored_hand.cards == [six_c, six_h]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [6, 6, 6, 10, 10]
 
     class Test_Flush:
         def test_baseCase_returnsCorrectly(self):
-            seven = Card(7, Suit.SPADES)
-            eight = Card(8, Suit.SPADES)
-            nine = Card(9, Suit.SPADES)
-            ten = Card(10, Suit.SPADES)
-            four = Card(4, Suit.SPADES)
-            three = Card(3, Suit.HEARTS)
-            two = Card(2, Suit.DIAMONDS)
-
-            hand = Hand((seven, eight))
-            board = Board((nine, ten, four, three, two))
+            hand = Hand((seven_s, eight_s))
+            board = Board((nine_s, ten_s, four_s, three_h, two_d))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 5
-            assert scored_hand.cards == [seven, eight]
+            assert scored_hand.cards == [seven_s, eight_s]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [10, 9, 8, 7, 4]
 
         def test_possibleSet_returnsCorrectly(self):
-            ace = Card(14, Suit.DIAMONDS)
-            queen1 = Card(12, Suit.SPADES)
-            queen2 = Card(12, Suit.DIAMONDS)
-            queen3 = Card(12, Suit.HEARTS)
-            ten = Card(10, Suit.DIAMONDS)
-            four = Card(4, Suit.DIAMONDS)
-            nine = Card(9, Suit.DIAMONDS)
-
-            hand = Hand((ace, ten))
-            board = Board((queen1, queen2, queen3, four, nine))
+            hand = Hand((ace_d, ten_d))
+            board = Board((queen_s, queen_d, queen_h, four_d, nine_d))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 5
-            assert scored_hand.cards == [ace, ten]
+            assert scored_hand.cards == [ace_d, ten_d]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [14, 12, 10, 9, 4]
 
         def test_possibleStraight_returnsCorrectly(self):
-            ace = Card(14, Suit.SPADES)
-            king = Card(13, Suit.SPADES)
-            queen = Card(12, Suit.DIAMONDS)
-            jack = Card(11, Suit.DIAMONDS)
-            ten = Card(10, Suit.DIAMONDS)
-            four = Card(4, Suit.DIAMONDS)
-            nine = Card(9, Suit.DIAMONDS)
-
-            hand = Hand((ace, ten))
-            board = Board((king, queen, jack, four, nine))
+            hand = Hand((ace_s, ten_d))
+            board = Board((king_s, queen_d, jack_d, four_d, seven_d))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 5
-            assert scored_hand.cards == [ace, ten]
+            assert scored_hand.cards == [ace_s, ten_d]
             assert len(scored_hand.best_5) == 5
-            assert [c.value for c in scored_hand.best_5] == [12, 11, 10, 9, 4]
+            assert [c.value for c in scored_hand.best_5] == [12, 11, 10, 7, 4]
 
         def test_multiplePossible_returnsCorrectly(self):
-            ace = Card(14, Suit.DIAMONDS)
-            two = Card(2, Suit.DIAMONDS)
-            queen = Card(12, Suit.DIAMONDS)
-            six = Card(6, Suit.DIAMONDS)
-            ten = Card(10, Suit.DIAMONDS)
-            four = Card(4, Suit.DIAMONDS)
-            nine = Card(9, Suit.DIAMONDS)
-
-            hand = Hand((six, two))
-            board = Board((ten, queen, ace, four, nine))
+            hand = Hand((six_d, two_d))
+            board = Board((ten_d, queen_d, ace_d, four_d, nine_d))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 5
-            assert scored_hand.cards == [six, two]
+            assert scored_hand.cards == [six_d, two_d]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [14, 12, 10, 9, 6]
 
     class Test_Straight:
         def test_baseCase_returnsCorrectly(self):
-            five = Card(5, Suit.SPADES)
-            six = Card(6, Suit.CLUBS)
-            seven = Card(7, Suit.DIAMONDS)
-            eight = Card(8, Suit.SPADES)
-            nine = Card(9, Suit.HEARTS)
-            two = Card(2, Suit.SPADES)
-            three = Card(3, Suit.HEARTS)
-
-            hand = Hand((five, six))
-            board = Board((seven, nine, two, eight, three))
+            hand = Hand((five_s, six_c))
+            board = Board((seven_d, nine_h, two_s, eight_s, three_h))
 
             scored_hand = find_strongest(hand, board)
             assert scored_hand.strength == 4
-            assert scored_hand.cards == [five, six]
+            assert scored_hand.cards == [five_s, six_c]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [9, 8, 7, 6, 5]
 
         def test_possibleSet_returnsCorrectly(self):
-            seven = Card(7, Suit.SPADES)
-            eight = Card(8, Suit.CLUBS)
-            nine = Card(9, Suit.DIAMONDS)
-            ten = Card(10, Suit.SPADES)
-            jack1 = Card(11, Suit.HEARTS)
-            jack2 = Card(11, Suit.SPADES)
-            jack3 = Card(11, Suit.DIAMONDS)
-
-            hand = Hand((seven, eight))
-            board = Board((nine, jack3, jack2, jack1, ten))
+            hand = Hand((seven_s, eight_c))
+            board = Board((nine_d, jack_d, jack_s, jack_h, ten_s))
 
             scored_hand = find_strongest(hand, board)
             assert scored_hand.strength == 4
-            assert scored_hand.cards == [seven, eight]
+            assert scored_hand.cards == [seven_s, eight_c]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [11, 10, 9, 8, 7]
 
         def test_almostFlush_returnsCorrectly(self):
-            seven = Card(7, Suit.SPADES)
-            eight = Card(8, Suit.SPADES)
-            nine = Card(9, Suit.SPADES)
-            ten = Card(10, Suit.SPADES)
-            jack = Card(11, Suit.HEARTS)
-            three = Card(3, Suit.HEARTS)
-            two = Card(2, Suit.DIAMONDS)
-
-            hand = Hand((seven, eight))
-            board = Board((nine, jack, three, two, ten))
+            hand = Hand((seven_s, eight_s))
+            board = Board((nine_s, jack_h, three_h, two_d, ten_s))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 4
-            assert scored_hand.cards == [seven, eight]
+            assert scored_hand.cards == [seven_s, eight_s]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [11, 10, 9, 8, 7]
 
@@ -393,100 +220,60 @@ class Test_findStrongest:
 
     class Test_ThreeOfAKind:
         def test_baseCase_returnsCorrectly(self):
-            three1 = Card(3, Suit.CLUBS)
-            three2 = Card(3, Suit.HEARTS)
-            three3 = Card(3, Suit.DIAMONDS)
-            ace = Card(14, Suit.CLUBS)
-            ten = Card(10, Suit.SPADES)
-            seven = Card(7, Suit.CLUBS)
-            nine = Card(9, Suit.SPADES)
-
-            hand = Hand((three1, ace))
-            board = Board((three2, three3, ten, seven, nine))
+            hand = Hand((three_c, ace_c))
+            board = Board((three_h, three_d, ten_s, seven_c, nine_s))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 3
-            assert scored_hand.cards == [three1, ace]
+            assert scored_hand.cards == [three_c, ace_c]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [3, 3, 3, 14, 10]
 
     class Test_TwoPair:
         def test_baseCase_returnsCorrectly(self):
-            seven1 = Card(7, Suit.CLUBS)
-            seven2 = Card(7, Suit.HEARTS)
-            ten1 = Card(10, Suit.CLUBS)
-            ten2 = Card(10, Suit.SPADES)
-            four = Card(4, Suit.CLUBS)
-            nine = Card(9, Suit.SPADES)
-            jack = Card(11, Suit.SPADES)
-
-            hand = Hand((four, jack))
-            board = Board((seven2, nine, ten1, seven1, ten2))
+            hand = Hand((four_c, jack_s))
+            board = Board((seven_h, nine_s, ten_c, seven_c, ten_s))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 2
-            assert scored_hand.cards == [four, jack]
+            assert scored_hand.cards == [four_c, jack_s]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [10, 10, 7, 7, 11]
 
         def test_threePairs_returnsCorrectly(self):
-            seven1 = Card(7, Suit.CLUBS)
-            seven2 = Card(7, Suit.HEARTS)
-            ten1 = Card(10, Suit.CLUBS)
-            ten2 = Card(10, Suit.SPADES)
-            four1 = Card(4, Suit.CLUBS)
-            four2 = Card(4, Suit.SPADES)
-            jack = Card(11, Suit.SPADES)
-
-            hand = Hand((four1, jack))
-            board = Board((seven2, four2, ten1, seven1, ten2))
+            hand = Hand((four_c, jack_s))
+            board = Board((seven_h, four_s, ten_c, seven_c, ten_s))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 2
-            assert scored_hand.cards == [four1, jack]
+            assert scored_hand.cards == [four_c, jack_s]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [10, 10, 7, 7, 11]
 
     class Test_Pair:
         def test_Pair_baseCase_returnsCorrectly(self):
-            seven1 = Card(7, Suit.CLUBS)
-            seven2 = Card(7, Suit.HEARTS)
-            ace = Card(14, Suit.CLUBS)
-            ten = Card(10, Suit.SPADES)
-            four = Card(4, Suit.CLUBS)
-            nine = Card(9, Suit.SPADES)
-            jack = Card(11, Suit.SPADES)
-
-            hand = Hand((four, jack))
-            board = Board((seven2, nine, ten, seven1, ace))
+            hand = Hand((four_c, jack_s))
+            board = Board((seven_h, nine_s, ten_s, seven_c, ace_c))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 1
-            assert scored_hand.cards == [four, jack]
+            assert scored_hand.cards == [four_c, jack_s]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [7, 7, 14, 11, 10]
 
     class Test_HighCard:
         def test_highCard_baseCase_returnsCorrectly(self):
-            two = Card(2, Suit.CLUBS)
-            four = Card(4, Suit.DIAMONDS)
-            six = Card(6, Suit.HEARTS)
-            eight = Card(8, Suit.HEARTS)
-            ten = Card(10, Suit.SPADES)
-            jack = Card(11, Suit.HEARTS)
-            king = Card(13, Suit.CLUBS)
-
-            hand = Hand((six, jack))
-            board = Board((ten, two, king, four, eight))
+            hand = Hand((six_h, jack_h))
+            board = Board((ten_s, two_c, king_c, four_d, eight_h))
 
             scored_hand = find_strongest(hand, board)
 
             assert scored_hand.strength == 0
-            assert scored_hand.cards == [six, jack]
+            assert scored_hand.cards == [six_h, jack_h]
             assert len(scored_hand.best_5) == 5
             assert [c.value for c in scored_hand.best_5] == [13, 11, 10, 8, 6]
 
