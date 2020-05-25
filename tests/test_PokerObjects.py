@@ -1,3 +1,5 @@
+from pytest import raises
+
 from PokerObjects import *
 
 from tests.utilsForTest import *
@@ -53,6 +55,14 @@ class Test_Card_Collection:
         assert not smaller_collection > bigger_collection
         assert not bigger_collection > smaller_collection
 
+    def test_gt_differentLengths_raisesException(self):
+        long_collection = Card_Collection(ten_d, ten_c, ten_h)
+        short_collection = Card_Collection(ten_d, ten_c)
+
+        with raises(ValueError) as e:
+            assert short_collection > long_collection
+        assert str(e.value) == "Input card collections are not the same length."
+
     def test_lt_HighCard_whenSmaller(self):
         bigger_collection = Card_Collection(ten_d, nine_c, eight_c, five_c, three_h)
         smaller_collection = Card_Collection(ten_d, nine_h, seven_h, six_d, three_d)
@@ -77,6 +87,39 @@ class Test_Card_Collection:
 
         assert not smaller_collection < bigger_collection
         assert not bigger_collection < smaller_collection
+
+    def test_lt_differentLengths_raisesException(self):
+        long_collection = Card_Collection(ten_d, ten_c, ten_h)
+        short_collection = Card_Collection(ten_d, ten_c)
+
+        with raises(ValueError) as e:
+            assert short_collection < long_collection
+        assert str(e.value) == "Input card collections are not the same length."
+
+    def test_hasSameValuesAs_whenEqual(self):
+        collection_a = Card_Collection(queen_d, jack_d, seven_h, six_c, three_h)
+        collection_b = Card_Collection(queen_c, jack_d, seven_c, six_h, three_d)
+
+        assert collection_a.has_same_values_as(collection_b)
+
+    def test_hasSameValuesAs_whenNotEqual(self):
+        collection_a = Card_Collection(queen_d, jack_d, seven_h, six_c, three_h)
+        collection_b = Card_Collection(queen_c, queen_h, seven_c, six_h, three_d)
+        collection_c = Card_Collection(ten_d, ten_c, ace_c, six_c, two_d)
+
+        assert not collection_a.has_same_values_as(collection_b)
+        assert not collection_c.has_same_values_as(collection_a)
+        assert not collection_b.has_same_values_as(collection_a)
+
+    def test_hasSameValuesAs_differentLengths_raisesError(self):
+        collection_short = Card_Collection(ace_c, ace_d, ace_h)
+        collection_long = Card_Collection(ace_c, ace_d, ace_s, ace_h)
+
+        with raises(ValueError) as e:
+            assert collection_long.has_same_values_as(collection_short)
+
+        assert str(e.value) == "Input card collections are not the same length."
+
 
 
 class Test_Deck:

@@ -54,6 +54,34 @@ class Card:
         else:
             return False
 
+    def __lt__(self, other):
+        if isinstance(other, Card):
+            if self.value < other.value:
+                return 1
+            else:
+                return 0
+        elif isinstance(other, int):
+            if self.value < other:
+                return 1
+            else:
+                return 0
+        else:
+            raise TypeError(f"< not supported for types Card and {type(other).__name__}")
+
+    def __gt__(self, other):
+        if isinstance(other, Card):
+            if self.value > other.value:
+                return 1
+            else:
+                return 0
+        elif isinstance(other, int):
+            if self.value > other:
+                return 1
+            else:
+                return 0
+        else:
+            raise TypeError(f"< not supported for types Card and {type(other).__name__}")
+
 
 class Card_Collection:
     """Base class for objects which will hold a list of cards"""
@@ -87,15 +115,15 @@ class Card_Collection:
         Raises error if the objects are of different size or type
         NB: Does not sort cards, assumes card order is relevant. (e.g 10, 10. 2 > 9, 9. ace)
         """
-        
+
         if not isinstance(other_obj, Card_Collection):
-            raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj)}")
-        
+            raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj).__name__}")
+
         if (num_cards := len(my_cards := self.cards)) != len(other_cards := other_obj.cards):
             raise ValueError(f"Input card collections are not the same length.")
-        
+
         for i in range(num_cards):
-            if my_cards[i].value > other_cards[i].value:
+            if my_cards[i] > other_cards[i]:
                 return 1
             elif my_cards[i].value != other_cards[i].value:
                 return 0
@@ -112,13 +140,13 @@ class Card_Collection:
         """
 
         if not isinstance(other_obj, Card_Collection):
-            raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj)}")
+            raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj).__name__}")
 
         if (num_cards := len(my_cards := self.cards)) != len(other_cards := other_obj.cards):
             raise ValueError(f"Input card collections are not the same length.")
 
         for i in range(num_cards):
-            if my_cards[i].value < other_cards[i].value:
+            if my_cards[i] < other_cards[i]:
                 return 1
             elif my_cards[i].value != other_cards[i].value:
                 return 0
@@ -128,7 +156,7 @@ class Card_Collection:
     def has_same_values_as(self, other_obj):
 
         if not isinstance(other_obj, Card_Collection):
-            raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj)}")
+            raise TypeError(f"< not supported between instances of Card_Collection and {type(other_obj).__name__}")
 
         if (num_cards := len(my_cards := self.get_sorted_cards())) != len(other_cards := other_obj.get_sorted_cards()):
             raise ValueError(f"Input card collections are not the same length.")
