@@ -174,7 +174,7 @@ class Hand(Card_Collection):
     Contains both that players card and the strength of their cards with the board
     """
 
-    def __init__(self, cards=()):
+    def __init__(self, *cards):
         super().__init__(*cards)
 
         self.strength = 0
