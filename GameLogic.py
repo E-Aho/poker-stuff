@@ -141,13 +141,16 @@ def find_strongest(hand: Hand, board: Board):
             hand.strength = 2
             return hand
 
+    def no_set_error():
+        raise Exception("No set found")
+
     def set_switcher(set_size: int):
         size_switch_case = {
             4: lambda: handle_4_set(),
             3: lambda: handle_3_set(),
             2: lambda: handle_2_set()
         }
-        function = size_switch_case.get(set_size, lambda: 'invalid')
+        function = size_switch_case.get(set_size, lambda: no_set_error())
         return function()
 
     largest_count = max(count for _, count in Counter([c.value for c in cards]).items())

@@ -174,7 +174,7 @@ class Hand(Card_Collection):
     Contains both that players card and the strength of their cards with the board
     """
 
-    def __init__(self, cards=()):
+    def __init__(self, *cards):
         super().__init__(*cards)
 
         self.strength = 0
@@ -187,6 +187,11 @@ class Hand(Card_Collection):
     def withStrength(self, strength: int):
         self.strength = strength
         return self
+
+    def __str__(self):
+        str_arr = [str(card) for card in self.get_sorted_cards()]
+        return ", ".join(str_arr)
+
 
 
 class Deck(Card_Collection):
@@ -209,6 +214,20 @@ class Board(Card_Collection):
 
     def deal_flop(self, deck: Deck):
         deck.deal(self, count=3)
+
+
+class Player:
+    def __init__(self):
+        self.chips = 0
+        self.hand = Hand()
+
+
+class Table:
+    def __init__(self):
+        self.hands = []
+        self.board = []
+        self.showdown_order = []
+    # TODO: finish meta-game objects
 
 
 if __name__ == "__main__":
