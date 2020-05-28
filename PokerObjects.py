@@ -161,10 +161,8 @@ class Card_Collection:
         if (num_cards := len(my_cards := self.get_sorted_cards())) != len(other_cards := other_obj.get_sorted_cards()):
             raise ValueError(f"Input card collections are not the same length.")
 
-        for i in range(num_cards):
-            if my_cards[i].value != other_cards[i].value:
-                return False
-
+        if ([c.value for c in my_cards]) != ([c.value for c in other_cards]):
+            return False
         return True
 
 
@@ -181,9 +179,6 @@ class Hand(Card_Collection):
         self.best_5 = []
         self.name = ""
 
-    def __str__(self):
-        return self.name
-
     def withStrength(self, strength: int):
         self.strength = strength
         return self
@@ -192,6 +187,8 @@ class Hand(Card_Collection):
         str_arr = [str(card) for card in self.get_sorted_cards()]
         return ", ".join(str_arr)
 
+    def __repr__(self):
+        return str(self)
 
 
 class Deck(Card_Collection):
@@ -209,7 +206,7 @@ class Deck(Card_Collection):
 
 
 class Board(Card_Collection):
-    def __init__(self, cards=()):
+    def __init__(self, *cards):
         super().__init__(*cards)
 
     def deal_flop(self, deck: Deck):

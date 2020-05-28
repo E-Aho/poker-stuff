@@ -54,7 +54,7 @@ class Test_findStrongest:
 
         def test_baseCase_returnsCorrectly(self):
             hand = Hand(six_c, five_c)
-            board = Board((three_c, seven_c, jack_h, four_c, nine_d))
+            board = Board(three_c, seven_c, jack_h, four_c, nine_d)
 
             scored_hand = find_strongest(hand, board)
 
@@ -65,7 +65,7 @@ class Test_findStrongest:
 
         def test_multiplePossible_returnsCorrectly(self):
             hand = Hand(six_c, five_c)
-            board = Board((three_c, seven_c, jack_d, four_c, eight_c))
+            board = Board(three_c, seven_c, jack_d, four_c, eight_c)
 
             scored_hand = find_strongest(hand, board)
 
@@ -77,7 +77,7 @@ class Test_findStrongest:
     class Test_FourOfAKind:
         def test_withPair_returnsCorrectly(self):
             hand = Hand(seven_c, seven_h)
-            board = Board((ten_s, ten_d, seven_d, seven_s, ace_d))
+            board = Board(ten_s, ten_d, seven_d, seven_s, ace_d)
 
             scored_hand = find_strongest(hand, board)
 
@@ -88,7 +88,7 @@ class Test_findStrongest:
 
         def test_baseCase_returnsCorrectly(self):
             hand = Hand(nine_c, ten_d)
-            board = Board((nine_h, four_c, king_h, nine_d, nine_s))
+            board = Board(nine_h, four_c, king_h, nine_d, nine_s)
 
             scored_hand = find_strongest(hand, board)
 
@@ -101,7 +101,7 @@ class Test_findStrongest:
 
         def test_twoTriplets_returnsCorrectly(self):
             hand = Hand(king_c, jack_c)
-            board = Board((king_h, king_d, jack_s, jack_d, five_d))
+            board = Board(king_h, king_d, jack_s, jack_d, five_d)
 
             scored_hand = find_strongest(hand, board)
 
@@ -112,7 +112,7 @@ class Test_findStrongest:
 
         def test_TripletAnd2Pairs_returnsCorrectly(self):
             hand = Hand(king_c, ace_c)
-            board = Board((seven_d, seven_c, ace_s, king_h, king_d))
+            board = Board(seven_d, seven_c, ace_s, king_h, king_d)
 
             scored_hand = find_strongest(hand, board)
 
@@ -123,7 +123,7 @@ class Test_findStrongest:
 
         def test_TripletAndPair_returnsCorrectly(self):
             hand = Hand(six_c, six_h)
-            board = Board((ten_c, three_d, king_d, six_d, ten_s))
+            board = Board(ten_c, three_d, king_d, six_d, ten_s)
 
             scored_hand = find_strongest(hand, board)
 
@@ -135,7 +135,7 @@ class Test_findStrongest:
     class Test_Flush:
         def test_baseCase_returnsCorrectly(self):
             hand = Hand(seven_s, eight_s)
-            board = Board((nine_s, ten_s, four_s, three_h, two_d))
+            board = Board(nine_s, ten_s, four_s, three_h, two_d)
 
             scored_hand = find_strongest(hand, board)
 
@@ -146,7 +146,7 @@ class Test_findStrongest:
 
         def test_possibleSet_returnsCorrectly(self):
             hand = Hand(ace_d, ten_d)
-            board = Board((queen_s, queen_d, queen_h, four_d, nine_d))
+            board = Board(queen_s, queen_d, queen_h, four_d, nine_d)
 
             scored_hand = find_strongest(hand, board)
 
@@ -157,7 +157,7 @@ class Test_findStrongest:
 
         def test_possibleStraight_returnsCorrectly(self):
             hand = Hand(ace_s, ten_d)
-            board = Board((king_s, queen_d, jack_d, four_d, seven_d))
+            board = Board(king_s, queen_d, jack_d, four_d, seven_d)
 
             scored_hand = find_strongest(hand, board)
 
@@ -168,7 +168,7 @@ class Test_findStrongest:
 
         def test_multiplePossible_returnsCorrectly(self):
             hand = Hand(six_d, two_d)
-            board = Board((ten_d, queen_d, ace_d, four_d, nine_d))
+            board = Board(ten_d, queen_d, ace_d, four_d, nine_d)
 
             scored_hand = find_strongest(hand, board)
 
@@ -180,7 +180,7 @@ class Test_findStrongest:
     class Test_Straight:
         def test_baseCase_returnsCorrectly(self):
             hand = Hand(five_s, six_c)
-            board = Board((seven_d, nine_h, two_s, eight_s, three_h))
+            board = Board(seven_d, nine_h, two_s, eight_s, three_h)
 
             scored_hand = find_strongest(hand, board)
             assert scored_hand.strength == 4
@@ -190,7 +190,7 @@ class Test_findStrongest:
 
         def test_possibleSet_returnsCorrectly(self):
             hand = Hand(seven_s, eight_c)
-            board = Board((nine_d, jack_d, jack_s, jack_h, ten_s))
+            board = Board(nine_d, jack_d, jack_s, jack_h, ten_s)
 
             scored_hand = find_strongest(hand, board)
             assert scored_hand.strength == 4
@@ -200,7 +200,7 @@ class Test_findStrongest:
 
         def test_almostFlush_returnsCorrectly(self):
             hand = Hand(seven_s, eight_s)
-            board = Board((nine_s, jack_h, three_h, two_d, ten_s))
+            board = Board(nine_s, jack_h, three_h, two_d, ten_s)
 
             scored_hand = find_strongest(hand, board)
 
@@ -211,7 +211,7 @@ class Test_findStrongest:
 
         def test_multiplePossible_returnsCorrectly(self):
             hand = Hand(king_c, nine_c)
-            board = Board((ten_d, queen_h, jack_d, eight_c, ace_s))
+            board = Board(ten_d, queen_h, jack_d, eight_c, ace_s)
 
             scored_hand = find_strongest(hand, board)
 
@@ -223,7 +223,7 @@ class Test_findStrongest:
     class Test_ThreeOfAKind:
         def test_baseCase_returnsCorrectly(self):
             hand = Hand(three_c, ace_c)
-            board = Board((three_h, three_d, ten_s, seven_c, nine_s))
+            board = Board(three_h, three_d, ten_s, seven_c, nine_s)
 
             scored_hand = find_strongest(hand, board)
 
@@ -235,7 +235,7 @@ class Test_findStrongest:
     class Test_TwoPair:
         def test_baseCase_returnsCorrectly(self):
             hand = Hand(four_c, jack_s)
-            board = Board((seven_h, nine_s, ten_c, seven_c, ten_s))
+            board = Board(seven_h, nine_s, ten_c, seven_c, ten_s)
 
             scored_hand = find_strongest(hand, board)
 
@@ -246,7 +246,7 @@ class Test_findStrongest:
 
         def test_threePairs_returnsCorrectly(self):
             hand = Hand(four_c, jack_s)
-            board = Board((seven_h, four_s, ten_c, seven_c, ten_s))
+            board = Board(seven_h, four_s, ten_c, seven_c, ten_s)
 
             scored_hand = find_strongest(hand, board)
 
@@ -258,7 +258,7 @@ class Test_findStrongest:
     class Test_Pair:
         def test_Pair_baseCase_returnsCorrectly(self):
             hand = Hand(four_c, jack_s)
-            board = Board((seven_h, nine_s, ten_s, seven_c, ace_c))
+            board = Board(seven_h, nine_s, ten_s, seven_c, ace_c)
 
             scored_hand = find_strongest(hand, board)
 
@@ -270,7 +270,7 @@ class Test_findStrongest:
     class Test_HighCard:
         def test_highCard_baseCase_returnsCorrectly(self):
             hand = Hand(six_h, jack_h)
-            board = Board((ten_s, two_c, king_c, four_d, eight_h))
+            board = Board(ten_s, two_c, king_c, four_d, eight_h)
 
             scored_hand = find_strongest(hand, board)
 
@@ -337,7 +337,8 @@ class Test_get_scoring_order:
 
         sorted_hands = get_scoring_order(tied_hand_1, bottom_hand, tied_hand_2, tied_hand_3)
 
-        expected_outputs = [[list(p), [bottom_hand]] for p in list(permutations([tied_hand_1, tied_hand_2, tied_hand_3]))]
+        tie_permutations = list(permutations([tied_hand_1, tied_hand_2, tied_hand_3]))
+        expected_outputs = [[list(p), [bottom_hand]] for p in tie_permutations]
 
         assert sorted_hands in expected_outputs
 
@@ -363,6 +364,19 @@ class Test_get_scoring_order:
         expected_outputs = [[list(perm_a), list(perm_b)] for perm_a in ties_a for perm_b in ties_b]
         assert sorted_hands in expected_outputs
 
+    def test_twoHandTie_returnsCorrectly(self):
+        tie_1 = Hand(seven_s, two_d).withStrength(4)
+        tie_2 = Hand(seven_h, six_h).withStrength(4)
+
+        tie_1.best_5 = [nine_c, eight_d, seven_s, six_d, five_d]
+        tie_2.best_5 = [nine_c, eight_d, seven_h, six_d, five_d]
+
+        sorted_hands = get_scoring_order(tie_2, tie_1)
+
+        assert sorted_hands == [[tie_1, tie_2]] or [[tie_2, tie_1]]
+        assert len(sorted_hands[0]) != 1
+        assert len(sorted_hands) == 1
+
 
 class Test_Integration:
 
@@ -371,7 +385,7 @@ class Test_Integration:
         player_1 = Hand(two_s, two_d)
         player_2 = Hand(three_h, four_d)
 
-        board = Board((two_c, five_c, six_d, king_c, nine_h))
+        board = Board(two_c, five_c, six_d, king_c, nine_h)
 
         player_1 = find_strongest(player_1, board)
         player_2 = find_strongest(player_2, board)

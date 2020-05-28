@@ -158,6 +158,10 @@ def find_strongest(hand: Hand, board: Board):
     return set_switcher(largest_count)
 
 
+def have_same_best_5(hand_a: Hand, hand_b: Hand):
+    return Card_Collection(*hand_a.best_5).has_same_values_as(Card_Collection(*hand_b.best_5))
+
+
 def get_scoring_order(*hands: Hand):
     """takes in any number of hands, returns list of lists of hands in order of strength"""
     scoring_order = []
@@ -169,7 +173,7 @@ def get_scoring_order(*hands: Hand):
 
                 list_current_strength = []
                 while len(st) > 0:
-                    sub_list = [equal_hand for equal_hand in st if st[0].has_same_values_as(equal_hand)]
+                    sub_list = [equal_hand for equal_hand in st if have_same_best_5(st[0], equal_hand)]
                     st = [hand for hand in st if hand not in sub_list]
                     list_current_strength.append(sub_list)
 
@@ -182,7 +186,6 @@ def get_scoring_order(*hands: Hand):
 
 
 if __name__ == "__main__":
-
     d = Deck()
 
     b = Board()
