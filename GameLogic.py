@@ -166,13 +166,8 @@ def get_scoring_order(*hands: Hand):
 
                 list_current_strength = []
                 while len(st) > 0:
-                    hand = st.pop()
-                    sub_list = [hand]
-                    for other_hand in st:  # check if they have the same value cards
-                        if Card_Collection(*hand.best_5).has_same_values_as(Card_Collection(*other_hand.best_5)):
-                            # hands are same, add to same sublist
-                            sub_list.append(other_hand)
-                            st.remove(other_hand)
+                    sub_list = [equal_hand for equal_hand in st if st[0].has_same_values_as(equal_hand)]
+                    st = [hand for hand in st if hand not in sub_list]
                     list_current_strength.append(sub_list)
 
                 # sort current strength list in order of the card size in the sublists

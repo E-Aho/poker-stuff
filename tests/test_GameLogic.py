@@ -1,3 +1,5 @@
+from itertools import permutations
+
 from GameLogic import *
 
 from tests.utilsForTest import *
@@ -317,4 +319,46 @@ class Test_get_scoring_order:
 
         sorted_hands = get_scoring_order(bottom_hand, top_hand, tied_second_hand, second_hand)
 
-        assert sorted_hands == [[top_hand], [second_hand, tied_second_hand], [bottom_hand]]
+        first_permutation = [[top_hand], [second_hand, tied_second_hand], [bottom_hand]]
+        second_permutation = [[top_hand], [tied_second_hand, second_hand], [bottom_hand]]
+
+        assert sorted_hands == first_permutation or second_permutation
+
+    def test_with3WayTie_returnsCorrectly(self):
+        tied_hand_1 = Hand().withStrength(4)  # straight
+        tied_hand_2 = Hand().withStrength(4)  # straight
+        tied_hand_3 = Hand().withStrength(4)  # straight
+        bottom_hand = Hand().withStrength(3)  # 3 of a kind
+
+        tied_hand_1.best_5 = [ten_c, nine_d, eight_c, seven_c, six_d]
+        tied_hand_2.best_5 = [ten_c, nine_s, eight_c, seven_c, six_h]
+        tied_hand_3.best_5 = [ten_c, nine_h, eight_c, seven_c, six_s]
+        bottom_hand.best_5 = [ten_c, ten_d, ten_s, ace_c, eight_c]
+
+        sorted_hands = get_scoring_order(tied_hand_1, bottom_hand, tied_hand_2, tied_hand_3)
+
+        expected_outputs = [[list(p), [bottom_hand]] for p in list(permutations([tied_hand_1, tied_hand_2, tied_hand_3]))]
+
+        assert sorted_hands in expected_outputs
+
+    def test_withMultipleTies_returnsCorrectly(self):
+
+        tie_a1 = Hand().withStrength(6)  # full house
+        tie_a2 = Hand().withStrength(6)  # full house
+        tie_b1 = Hand().withStrength(4)  # straight
+        tie_b2 = Hand().withStrength(4)  # straight
+        tie_b3 = Hand().withStrength(4)  # straight
+
+        tie_a1.best_5 = [two_s, two_d, two_c, three_c, three_d]
+        tie_a2.best_5 = [two_c, two_d, two_h, three_c, three_d]
+        tie_b1.best_5 = [six_c, five_d, four_h, three_d, two_c]
+        tie_b2.best_5 = [six_d, five_h, four_h, three_d, two_c]
+        tie_b3.best_5 = [six_h, five_s, four_h, three_d, two_c]
+
+        ties_a = permutations([tie_a1, tie_a2])
+        ties_b = permutations([tie_b3, tie_b2, tie_b1])
+
+        sorted_hands = get_scoring_order(tie_a1, tie_a2, tie_b1, tie_b2, tie_b3)
+
+        expected_outputs = [[list(perm_a), list(perm_b)] for perm_a in ties_a for perm_b in ties_b]
+        assert sorted_hands in expected_outputs

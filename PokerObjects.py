@@ -179,6 +179,14 @@ class Hand(Card_Collection):
 
         self.strength = 0
         self.best_5 = []
+        self.name = ""
+
+    def __str__(self):
+        return self.name
+
+    def withStrength(self, strength: int):
+        self.strength = strength
+        return self
 
 
 class Deck(Card_Collection):
