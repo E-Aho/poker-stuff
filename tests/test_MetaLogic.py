@@ -3,6 +3,7 @@ from PokerObjects import *
 
 from tests.utilsForTest import *
 
+
 # Run with PyTest
 
 
@@ -27,3 +28,15 @@ class Test_get_outs:
         assert win_dict["Tie"] == 141
         assert win_dict[flush_hand] == 438
         assert win_dict[straight_hand] == 411
+
+    def test_withThreeHands_afterFlop_returnsCorrectly(self):
+        top_hand = Hand(ace_h, king_h)
+        mid_hand = Hand(queen_h, jack_h)
+        low_hand = Hand(ten_h, nine_h)
+        board = Board(king_s, ten_d, six_s)
+
+        win_dict = get_outs([top_hand, mid_hand, low_hand], board)
+        assert win_dict["Tie"] == 0
+        assert win_dict[top_hand] == 586
+        assert win_dict[mid_hand] == 225
+        assert win_dict[low_hand] == 92
