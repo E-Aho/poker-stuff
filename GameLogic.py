@@ -2,13 +2,13 @@ from collections import Counter
 
 from PokerObjects import *
 
-
 # NB: Methods assume that normal Texas Hold'em rules are used.
 #
 # Some methods may not return optimal hand in case of weird rules.
 # E.g if there are 10+ cards in hand + board, where more than one straight or flush is possible.
 # Or if there are 8 cards, it is possible that both a straight and full house are present,
 # but these methods will not take that into account (short out after finding flush/straight)
+
 
 def get_sorted_remainder(sets: list, all_cards: list):
     return sorted([c for c in all_cards if c not in sets], key=lambda c: -c.value)

@@ -40,3 +40,14 @@ class Test_get_outs:
         assert win_dict[top_hand] == 586
         assert win_dict[mid_hand] == 225
         assert win_dict[low_hand] == 92
+
+    def test_oneCardLeft_withTwoPairs_returnsCorrectly(self):
+        hand_1 = Hand(ace_s, ace_h)
+        hand_2 = Hand(two_c, two_d)
+        board = Board(queen_c, seven_d, nine_c, king_s)
+
+        win_dict = get_outs_multithreaded([hand_1, hand_2], board)
+
+        assert win_dict["Tie"] == 0
+        assert win_dict[hand_1] == 42
+        assert win_dict[hand_2] == 2
